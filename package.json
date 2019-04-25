@@ -1,0 +1,32 @@
+{
+  "name": "trello-anu",
+  "version": "1.0.0",
+  "description": "Trello using React, NodeJS/Express and MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anudeepakumar/trello-anu.git"
+  },
+  "keywords": [
+    "Mongo",
+    "Express",
+    "React",
+    "Node"
+  ],
+  "author": "anudeepakumar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anudeepakumar/trello-anu/issues"
+  },
+  "homepage": "https://github.com/anudeepakumar/trello-anu#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "mongoose": "^5.5.3"
+  }
+}
