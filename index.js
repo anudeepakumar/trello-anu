@@ -15,6 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 const bodyParser = require('body-parser');
 
 app.post('/api/*', bodyParser.json());
+app.put('/api/*', bodyParser.json());
 
 // router
 const apiRouter = require('./api/router')

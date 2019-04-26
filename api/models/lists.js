@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let BoardsSchema = new Schema({
+let ListsSchema = new Schema({
+	boardId: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'Boards'
+	},
 	name: {
 		type: String,
 		required: true,
@@ -13,4 +17,4 @@ let BoardsSchema = new Schema({
 	}
 });
 
-module.exports = mongoose.model('Boards', BoardsSchema);
+module.exports = mongoose.model('Lists', ListsSchema);
