@@ -19,6 +19,19 @@ module.exports = {
 			});
 	},
 
+	// get one list with Id
+	getList: (req, res) => {
+		const listId = req.params.listId;
+		return ListsModel.findById(listId)
+			.then((lists) => {
+				helper.successHandler(lists, req, res);
+			})
+			.catch((err) => {
+				logger.logError(err, '1', 'getList', 'api/controllers/lists');
+				helper.errorHandler(req, res);
+			});
+	},
+
 	// create a new list
 	createLists: (req, res) => {
 		const boardId = req.params.boardId;

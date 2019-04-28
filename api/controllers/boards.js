@@ -19,6 +19,19 @@ module.exports = {
 			});
 	},
 
+	// get one board with Id
+	getBoard: (req, res) => {
+		const boardId = req.params.boardId;
+		return BoardsModel.findById(boardId)
+			.then((boards) => {
+				helper.successHandler(boards, req, res);
+			})
+			.catch((err) => {
+				logger.logError(err, '1', 'getBoard', 'api/controllers/boards');
+				helper.errorHandler(req, res);
+			});
+	},
+
 	// create a new board
 	createBoards: (req, res) => {
 		const boardData = req.body;

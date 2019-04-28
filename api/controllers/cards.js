@@ -18,6 +18,19 @@ module.exports = {
 			});
 	},
 
+	// get one card with Id
+	getCard: (req, res) => {
+		const cardId = req.params.cardId;
+		return CardsModel.findById(cardId)
+			.then((cards) => {
+				helper.successHandler(cards, req, res);
+			})
+			.catch((err) => {
+				logger.logError(err, '1', 'getCard', 'api/controllers/cards');
+				helper.errorHandler(req, res);
+			});
+	},
+
 	// create a new card
 	createCards: (req, res) => {
 		const listId = req.params.listId;
