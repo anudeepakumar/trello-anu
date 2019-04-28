@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Card, Button, Modal, Form, Breadcrumb} from 'react-bootstrap';
 import { IoIosCloseCircleOutline, IoMdCreate, IoIosFolderOpen, IoMdOpen } from "react-icons/io";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 class Lists extends Component {
 	constructor () {
@@ -9,30 +10,27 @@ class Lists extends Component {
 
 		this.handleListModalShow = this.handleListModalShow.bind(this);
 		this.handleListModalClose = this.handleListModalClose.bind(this);
+		this.handleDataRefresh = this.handleDataRefresh.bind(this);
+		this.handleDeleteList = this.handleDeleteList.bind(this);
 
 		this.state = {
 			show: false,
-			lists: [
-				{
-					"_id": "5cc38088aaf2f1745c1d7810",
-					"name": "List 1",
-					"date": "2019-04-26T22:04:56.156Z",
-					"__v": 0
-				},
-				{
-					"_id": "5cc3808baaf2f1745c1d7811",
-					"name": "List 2",
-					"date": "2019-04-26T22:04:59.416Z",
-					"__v": 0
-				},
-				{
-					"_id": "5cc3808daaf2f1745c1d7812",
-					"name": "List 3",
-					"date": "2019-04-26T22:05:01.978Z",
-					"__v": 0
-				}
-			]
+			lists: []
 		};
+	}
+
+	componentDidMount() {
+		this.handleDataRefresh();
+	}
+
+	handleDataRefresh() {
+		axios.get('/api/lists/'+this.props.match.params.boardId)
+			.then((res)=>{
+				this.setState({lists: res.data.data})
+			})
+			.catch((err)=>{
+
+			});
 	}
 
 	handleListModalClose() {
@@ -42,6 +40,16 @@ class Lists extends Component {
 	handleListModalShow() {
 	  this.setState({ show: true });
 	}
+
+    handleDeleteList(e) {
+		axios.delete('/api/lists/'+e.currentTarget.dataset.key)
+			.then((res)=>{
+				this.handleDataRefresh()
+			})
+			.catch((err)=>{
+
+			});
+    }
 
 	render() {
 		return (
@@ -61,7 +69,7 @@ class Lists extends Component {
 								<Card.Title>{list.name}</Card.Title>
 								<Link to={`/cards/${list._id}`}><Button variant="primary" data-key={list._id}><IoIosFolderOpen /> open</Button></Link>&nbsp;
                                 <Button variant="secondary" data-key={list._id} onClick={this.handleListModalShow}><IoMdCreate /> edit</Button>&nbsp;
-                                <Button variant="danger" data-key={list._id}><IoIosCloseCircleOutline /> delete</Button>
+                                <Button variant="danger" data-key={list._id} onClick={this.handleDeleteList}><IoIosCloseCircleOutline /> delete</Button>
 							</Card.Body>
 						</Card>
 					</div>

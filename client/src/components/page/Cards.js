@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, Button, Modal, ListGroup, ListGroupItem, Form, Breadcrumb } from 'react-bootstrap';
 import { IoIosCloseCircleOutline, IoMdCreate, IoIosChatboxes, IoMdOpen, IoIosMove } from "react-icons/io";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 class Cards extends Component {
     constructor() {
@@ -13,35 +14,38 @@ class Cards extends Component {
         this.handleMoveModalShow = this.handleMoveModalShow.bind(this);
         this.handleCommentModalClose = this.handleCommentModalClose.bind(this);
         this.handleCommentModalShow = this.handleCommentModalShow.bind(this);
+        this.handleDeleteCard = this.handleDeleteCard.bind(this);
+        this.handleDataRefresh = this.handleDataRefresh.bind(this);
 
         this.state = {
             show: false,
             moveModal: false,
             commentModal: false,
-            cards: [
-                {
-                    "_id": "5cc38088aaf2f1745c1d7810",
-                    "name": "Card 1",
-                    "description": "jshgdf jasfgj KAk kshefgked kshfgkh aks abkv ja a ksdbfi a klshfk 123",
-                    "date": "2019-04-26T22:04:56.156Z",
-                    "__v": 0
-                },
-                {
-                    "_id": "5cc3808baaf2f1745c1d7811",
-                    "name": "Card 2",
-                    "description": "jshgdf jasfgj KAk kshefgked kshfgkh aks abkv ja a ksdbfi a klshfk 123",
-                    "date": "2019-04-26T22:04:59.416Z",
-                    "__v": 0
-                },
-                {
-                    "_id": "5cc3808daaf2f1745c1d7812",
-                    "name": "Card 3",
-                    "description": "jshgdf jasfgj KAk kshefgked kshfgkh aks abkv ja a ksdbfi a klshfk 123",
-                    "date": "2019-04-26T22:05:01.978Z",
-                    "__v": 0
-                }
-            ]
+            cards: [],
+            boardId: null
         };
+    }
+
+	componentDidMount() {
+        console.log(this.props)
+        this.handleDataRefresh();
+        axios.get('/api/list/'+this.props.match.params.listId)
+            .then((res)=>{
+                this.setState({boardId: res.data.data.boardId})
+            })
+            .catch((err)=>{
+
+            });
+    }
+    
+    handleDataRefresh() {
+		axios.get('/api/cards/'+this.props.match.params.listId)
+			.then((res)=>{
+				this.setState({cards: res.data.data})
+			})
+			.catch((err)=>{
+
+			});
     }
 
     handleCardModalClose() {
@@ -68,12 +72,22 @@ class Cards extends Component {
         this.setState({ commentModal: true });
     }
 
+    handleDeleteCard(e) {
+		axios.delete('/api/cards/'+e.currentTarget.dataset.key)
+			.then((res)=>{
+				this.handleDataRefresh()
+			})
+			.catch((err)=>{
+
+			});
+    }
+
     render() {
         return (
             <div>
                 <Breadcrumb>
                     <Breadcrumb.Item><Link to="/boards">Boards</Link></Breadcrumb.Item>
-                    <Breadcrumb.Item><Link to="/lists/aaa">Lists</Link></Breadcrumb.Item>
+                    <Breadcrumb.Item><Link to={`/lists/${this.state.boardId}`}>Lists</Link></Breadcrumb.Item>
                     <Breadcrumb.Item active>Cards</Breadcrumb.Item>
                 </Breadcrumb>
                 <h1>Cards</h1>
@@ -90,15 +104,16 @@ class Cards extends Component {
                                 <Card.Subtitle>Comments:</Card.Subtitle>
                             </Card.Body>
                             <ListGroup className="list-group-flush">
-                                <ListGroupItem>Cras justo odio</ListGroupItem>
-                                <ListGroupItem>Dapibus ac facilisis in</ListGroupItem>
-                                <ListGroupItem>Vestibulum at eros</ListGroupItem>
+                                {card.comments.map((comment, i) => (
+                                    <ListGroupItem key={comment._id}>{comment.body}</ListGroupItem>
+                                ))}
+
                             </ListGroup>
                             <Card.Body>
                                 <Button variant="secondary" data-key={card._id} onClick={this.handleCardModalShow}><IoMdCreate /> edit</Button>&nbsp;
                                 <Button variant="warning" data-key={card._id} onClick={this.handleMoveModalShow}><IoIosMove /> move</Button>&nbsp;
                                 <Button variant="info" data-key={card._id} onClick={this.handleCommentModalShow}><IoIosChatboxes /> comment</Button>&nbsp;
-                                <Button variant="danger" data-key={card._id}><IoIosCloseCircleOutline /> delete</Button>
+                                <Button variant="danger" data-key={card._id} onClick={this.handleDeleteCard}><IoIosCloseCircleOutline /> delete</Button>
                             </Card.Body>
                         </Card>
                     </div>

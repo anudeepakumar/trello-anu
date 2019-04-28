@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Navbar, Container} from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 
 class Header extends Component {
     render() {
